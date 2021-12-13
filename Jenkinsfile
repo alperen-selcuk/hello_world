@@ -11,5 +11,10 @@ pipeline {
         sh 'mvn clean test'
       }
     }
+    stage ("build artifact") {
+      steps {
+        sh 'mvn clean package -DskipTests'
+      }
+    }
   }
 }
