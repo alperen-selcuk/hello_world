@@ -1,5 +1,10 @@
 pipeline {
   agent any
+  
+  tools {
+    maven 'mvn-3.8.4'
+  }
+  
   stages {
     stage ("scm") {
       steps {
@@ -8,9 +13,6 @@ pipeline {
     }
     stage ("test") {
       steps {
-        tools {
-          maven 'mvn-3.8.4'
-        }
         sh 'mvn clean test'
       }
     }
