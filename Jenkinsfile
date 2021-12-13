@@ -8,6 +8,9 @@ pipeline {
     }
     stage ("test") {
       steps {
+        tools {
+          maven 'mvn-3.8.4'
+        }
         sh 'mvn clean test'
       }
     }
