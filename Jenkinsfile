@@ -1,10 +1,5 @@
 pipeline {
   agent any
-  
-  tools {
-    maven
-  }
-  
   stages {
     stage ("scm") {
       steps {
