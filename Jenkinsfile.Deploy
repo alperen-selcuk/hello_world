@@ -7,8 +7,9 @@ pipeline {
     stage ("get number") {
       steps {
         script {
-          def lastbuild = Jenkins.instance.getItem(env.${build_job}).lastSuccessfulBuild.displayName
-          echo "Last Success Build Name: ${lastSuccessBuildName}"
+          def job = Jenkins.instance.getItemByFullName(build_job)
+          def build = job.getLastBuild()
+          echo "${build}"
         }
       }
     }
