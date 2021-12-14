@@ -6,7 +6,7 @@ node {
     stage('sonarqube analysis') {
         def scannerHome = tool 'sonar-scanner';
         withSonarQubeEnv ('sonar-server') {
-            sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=jenkins -Dsonar.login=aba6bbb1a801c88eb000dfa905d24c46d29edca2"
+            sh "${scannerHome}/bin/sonar-scanner"
         }
     }
     stage('quality gate') {
