@@ -1,0 +1,47 @@
+pipeline {
+  environment {
+    VERSION = "${BUILD_NUMBER}"
+    REGISTRY = "hasanalperen/vf"
+  }
+  agent {
+    kubernetes {
+      yaml '''
+      apiVersion: v1
+      kind: Pod
+      spec:
+        containers:
+        - name : docker
+          image : docker:latest
+          command:
+          - cat
+          tty : true
+          volumeMounts: 
+          - mountPath: /var/run/docker.sock
+          name: docker-sock
+        - name : maven
+          image : maven
+          command: 
+          - cat
+          tty: true
+        volumes: 
+          - name: docker-sock
+          hostPath: /var/run/docker.sock
+    }
+  }
+  stages {
+    stage ("test") {
+      steps {
+        container ('maven') {
+           sh 'mvn clean test'
+        }
+      }
+    }
+    stage ("build artifact") {
+      steps {
+        container ('maven') {
+          sh 'mvn clean package -DskipTests'
+        }  
+      }
+    }
+  }
+}
