@@ -3,8 +3,8 @@ pipeline {
   stages {
     stage ("get number") {
       steps {
-        def buildNumber = Jenkins.instance.getItem('Build').lastSuccessfulBuild.number
-        echo $buildNumber
+         def buildNumber = Jenkins.instance.getItem('Build').lastSuccessfulBuild.number
+         echo $buildNumber
       }
     }
   }
