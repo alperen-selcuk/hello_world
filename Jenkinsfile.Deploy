@@ -1,9 +1,12 @@
 pipeline {
+  environment {
+    build_job = "1.2 Build"
+  }
   stages {
     stage ("get number") {
       steps {
         script {
-          def lastbuild = Jenkins.instance.getItem(env.1.2 Build).lastSuccessfulBuild.displayName
+          def lastbuild = Jenkins.instance.getItem(env.${build_job}).lastSuccessfulBuild.displayName
           echo "Last Success Build Name: ${lastSuccessBuildName}"
         }
       }
