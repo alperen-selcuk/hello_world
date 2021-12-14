@@ -1,6 +1,6 @@
 pipeline {
   environment {
-    build_job = "1.2 Build"
+    build_job = "Build"
   }
   agent any
   stages {
