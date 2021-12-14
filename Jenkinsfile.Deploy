@@ -1,16 +1,12 @@
 pipeline {
   environment {
-    build_job = "Build"
+    build_id = "wget -q0- http://jenkins-34-142-28-211.nip.io:8080/job/Build/lastSuccessfulBuild/buildNumber"
   }
   agent any
   stages {
     stage ("get number") {
       steps {
-        script {
-          def job = Jenkins.instance.getItemByFullName(build_job)
-          def build = job.getLastBuild()
-          echo "${build}"
-        }
+        echo $build_id
       }
     }
   }
