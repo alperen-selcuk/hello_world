@@ -18,6 +18,11 @@ pipeline {
           volumeMounts: 
           - mountPath: /var/run/docker.sock
             name: docker-sock
+        - name : maven
+          image: maven
+          command: 
+          - cat:
+          tty: true
         volumes: 
           - name: docker-sock
             hostPath: 
@@ -28,12 +33,16 @@ pipeline {
   stages {
     stage ("test") {
       steps {
-         sh 'mvn clean test'
+        container ('maven') {
+          sh 'mvn clean test'
+        }
       }
     }
     stage ("build artifact") {
       steps {
+        container('maven') {
           sh 'mvn clean package -DskipTests'
+        }
       }
     }
     stage ("docker build") {
