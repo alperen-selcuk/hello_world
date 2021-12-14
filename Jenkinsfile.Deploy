@@ -6,8 +6,7 @@ pipeline {
   stages {
     stage ("get number") {
       steps {
-        sh "build_id = $(wget -q0- http://jenkins-34-142-28-211.nip.io:8080/job/Build/lastSuccessfulBuild/buildNumber)"
-        sh "echo ${build_id}"
+        sh "wget -q0- http://jenkins-34-142-28-211.nip.io:8080/job/Build/lastSuccessfulBuild/buildNumber"
       }
     }
   }
