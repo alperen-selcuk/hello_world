@@ -26,6 +26,7 @@ pipeline {
         volumes: 
           - name: docker-sock
           hostPath: /var/run/docker.sock
+       '''
     }
   }
   stages {
