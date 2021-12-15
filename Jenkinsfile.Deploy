@@ -1,7 +1,7 @@
 pipeline {
     environment {
         APP = "hello_world"
-        HELM_REPO = "http://museum-34-142-28-211.nip.io:9090"
+        HELM_REPO = "http://34.142.28.211:9090"
         VERSION = "${BUILD_NUMBER}"
         helmVersion = "1.0"+"."+"${VERSION}"
         google_prj_id = "playground-334820"
@@ -47,10 +47,8 @@ pipeline {
                    tar -xvzf hello_world.tgz
                    rm -f hello_world.tgz
                    helm package ${APP} --version=${helmVersion}
-                   ls
-                   pwd
                    sleep 2
-                   curl -L --data-binary @${APP}-${helmVersion}.tgz ${HELM_REPO}/api/charts
+                   curl -L --data-binary "@${APP}-${helmVersion}.tgz" ${HELM_REPO}/api/charts
                    '''
              } 
           }
