@@ -4,7 +4,7 @@ pipeline {
         HELM_REPO = "http://museum-34-142-28-211.nip.io:9090"
         VERSION = "${BUILD_NUMBER}"
         helmVersion = "1.0"+"."+"${VERSION}"
-        google-sa = "jenkins@playground-334820.iam.gserviceaccount.com"
+        google-sa = "jenkins\@playground-334820.iam.gserviceaccount.com"
         google-prj-id = "playground-334820"
     }
     agent { 
