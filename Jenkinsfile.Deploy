@@ -41,8 +41,6 @@ pipeline {
             script {
                 def buildNumber = Jenkins.instance.getItem('Build').lastSuccessfulBuild.number
             }
-        }
-        steps {
             container('helm') {
                 sh '''#!/bin/bash
                    wget -c https://github.com/alperen-selcuk/hello_world/raw/master/shared-chart.tgz ##this is shared chart you can create your own charts file
