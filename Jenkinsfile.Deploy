@@ -52,7 +52,7 @@ pipeline {
                    tar -xvzf shared-chart.tgz
                    rm -f shared-chart.tgz
                    helm package ${APP} --version=${buildNumber}
-                   #curl -L --data-binary @${APP}-${buildNumber}.tgz ${HELM_REPO}/api/charts
+                   curl -L --data-binary @${APP}-${buildNumber}.tgz ${HELM_REPO}/api/charts
                    '''
                 } 
             }
