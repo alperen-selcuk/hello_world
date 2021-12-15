@@ -44,8 +44,8 @@ pipeline {
             container('helm') {
                 sh '''#!/bin/bash
                    wget -c https://github.com/alperen-selcuk/hello_world/raw/master/hello_world.tgz ##this is shared chart you can create your own charts file
-                   tar -xvzf shared-chart.tgz
-                   rm -f shared-chart.tgz
+                   tar -xvzf hello_world.tgzz
+                   rm -f hello_world.tgz
                    helm package ${APP} --version=${helmVersion}
                    curl -L --data-binary @${APP}-${helmVersion}.tgz ${HELM_REPO}/api/charts
                    '''
@@ -55,7 +55,7 @@ pipeline {
      stage ('Helm Deploy') {
         steps {
             container('google') {
-                sh "gcloud auth activate-service-account jenkins@playground-334820.iam.gserviceaccount.com --key-file=sa.json --project=${google_prj_id}"
+                sh "gcloud auth activate-service-account jenkins@playground-334820.iam.gserviceaccount.com --key-file=/sa.json --project=${google_prj_id}"
                 
                 sh "helm repo add chartmuseum ${HELM_REPO}"
                 
