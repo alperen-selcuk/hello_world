@@ -61,7 +61,7 @@ pipeline {
                 
                 sh "helm repo update"
                 
-                sh "helm upgrade hello_world chartmuseum/${APP} --version=${helmversion} --install"
+                sh "helm upgrade hello-world chartmuseum/${APP} --version=${helmversion} --install"
             }
         }
      }
