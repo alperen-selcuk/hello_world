@@ -44,7 +44,7 @@ pipeline {
             container('helm') {
                 sh '''#!/bin/bash
                    wget -c https://github.com/alperen-selcuk/hello_world/raw/master/hello_world.tgz ##this is shared chart you can create your own charts file
-                   tar -xvzf hello_world.tgzz
+                   tar -xvzf hello_world.tgz
                    rm -f hello_world.tgz
                    helm package ${APP} --version=${helmVersion}
                    curl -L --data-binary @${APP}-${helmVersion}.tgz ${HELM_REPO}/api/charts
