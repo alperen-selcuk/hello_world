@@ -47,6 +47,9 @@ pipeline {
                    tar -xvzf hello_world.tgz
                    rm -f hello_world.tgz
                    helm package ${APP} --version=${helmVersion}
+                   ls
+                   pwd
+                   sleep 2
                    curl -L --data-binary @${APP}-${helmVersion}.tgz ${HELM_REPO}/api/charts
                    '''
              } 
@@ -61,7 +64,7 @@ pipeline {
                 
                 sh "helm repo update"
                 
-                sh "helm upgrade hello-world chartmuseum/${APP} --version=${helmversion} --install"
+                sh "helm upgrade hello_world chartmuseum/${APP} --version=${helmversion} --install"
             }
         }
      }
