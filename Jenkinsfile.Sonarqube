@@ -6,7 +6,7 @@ node {
     stage('sonarqube analysis') {
         def scannerHome = tool 'sonar-scanner';
         withSonarQubeEnv ('sonar-server') {
-            sh "mvn clean verify sonar:sonar -Dsonar.projectKey=jenkins -Dsonar.host.url=http://sonar-34-142-28-211.nip.io:9000 -Dsonar.login=eaa50b7eb51798ec8a693c6b931606d495120175"
+            sh "mvn clean verify sonar:sonar -Dsonar.projectKey=jenkins -Dsonar.host.url=http://sonar-34-142-28-211.nip.io:9000 -Dsonar.login=65db305b9ee58fa1e96bff385058204fef0ca26a"
         }
     }
     stage('quality gate') {
