@@ -24,11 +24,6 @@ pipeline {
                  command:
                  - cat
                  tty: true
-                 volumeMounts: 
-                 - mountPath: /root
-                   name: console-root
-                 - mountPath: /root/.kube
-                   name: console-kube
                volumes: 
                  - name : docker-sock
                    hostPath: 
