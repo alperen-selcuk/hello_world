@@ -20,7 +20,7 @@ pipeline {
                  - cat
                  tty: true
                - name: google
-                 image: google/cloud-sdk
+                 image: hasanalperen/gcph:12.21
                  command:
                  - cat
                  tty: true
