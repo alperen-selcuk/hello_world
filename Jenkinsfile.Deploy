@@ -2,6 +2,10 @@ pipeline {
     environment {
         APP = "hello_world"
         HELM_REPO = "http://museum-34-142-28-211.nip.io:9090"
+        VERSION = "${BUILD_NUMBER}"
+        helmVersion = "1.0"+"."+"${VERSION}"
+        google-sa = "jenkins@playground-334820.iam.gserviceaccount.com"
+        google-prj-id = "playground-334820"
     }
     agent { 
         kubernetes {
@@ -38,19 +42,29 @@ pipeline {
   stages {
     stage('Helm Create') {
         steps {
-            script {
-                def buildNumber = Jenkins.instance.getItem('Build').lastSuccessfulBuild.number
-            }
             container('helm') {
                 sh '''#!/bin/bash
                    wget -c https://github.com/alperen-selcuk/hello_world/raw/master/hello_world.tgz ##this is shared chart you can create your own charts file
                    tar -xvzf shared-chart.tgz
                    rm -f shared-chart.tgz
-                   helm package ${APP} --version=${buildNumber}
-                   curl -L --data-binary @${APP}-${buildNumber}.tgz ${HELM_REPO}/api/charts
+                   helm package ${APP} --version=${helmVersion}
+                   curl -L --data-binary @${APP}-${helmVersion}.tgz ${HELM_REPO}/api/charts
                    '''
-                } 
+             } 
+          }
+     }
+     stage ('Helm Deploy') {
+        steps {
+            container('google') {
+                sh "gcloud auth activate-service-account ${google-sa} --key-file=sa.json --project=${google-prj-id}"
+                
+                sh "helm repo add chartmuseum ${HELM_REPO}"
+                
+                sh "helm repo update"
+                
+                sh "helm upgrade hello_world chartmuseum/${APP} --version=${helmversion} --install"
             }
         }
+     }
   }
 }
