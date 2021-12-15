@@ -2,7 +2,6 @@ pipeline {
     environment {
         APP = "hello_world"
         HELM_REPO = "http://museum-34-142-28-211.nip.io:9090"
-        def buildNumber = Jenkins.instance.getItem('Build').lastSuccessfulBuild.number
     }
     agent { 
         kubernetes {
@@ -37,15 +36,12 @@ pipeline {
         }
     }
   stages {
-    stage ("get number") {
-      steps {
-        script {
-         def buildNumber = Jenkins.instance.getItem('Build').lastSuccessfulBuild.number
-         echo "${buildNumber}"
-         }
-      }
-    }
     stage('Helm Create') {
+        steps {
+            script {
+                def buildNumber = Jenkins.instance.getItem('Build').lastSuccessfulBuild.number
+            }
+        }
         steps {
             container('helm') {
                 sh '''#!/bin/bash
