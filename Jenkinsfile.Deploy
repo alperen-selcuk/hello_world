@@ -43,7 +43,7 @@ pipeline {
             }
             container('helm') {
                 sh '''#!/bin/bash
-                   wget -c https://github.com/alperen-selcuk/hello_world/raw/master/shared-chart.tgz ##this is shared chart you can create your own charts file
+                   wget -c https://github.com/alperen-selcuk/hello_world/raw/master/hello_world.tgz ##this is shared chart you can create your own charts file
                    tar -xvzf shared-chart.tgz
                    rm -f shared-chart.tgz
                    helm package ${APP} --version=${buildNumber}
