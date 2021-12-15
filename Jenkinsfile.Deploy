@@ -1,6 +1,6 @@
 pipeline {
     environment {
-        APP = "hello_world"
+        APP = "hello-world"
         HELM_REPO = "http://34.142.28.211:9090"
         VERSION = "${BUILD_NUMBER}"
         helmVersion = "1.0"+"."+"${VERSION}"
@@ -43,9 +43,9 @@ pipeline {
         steps {
             container('helm') {
                 sh '''#!/bin/bash
-                   wget -c https://github.com/alperen-selcuk/hello_world/raw/master/hello_world.tgz ##this is shared chart you can create your own charts file
-                   tar -xvzf hello_world.tgz
-                   rm -f hello_world.tgz
+                   wget -c https://github.com/alperen-selcuk/hello_world/raw/master/hello-world.tgz ##this is shared chart you can create your own charts file
+                   tar -xvzf hello-world.tgz
+                   rm -f hello-world.tgz
                    helm package ${APP} --version=${helmVersion}
                    sleep 2
                    helm repo add chartmuseum ${HELM_REPO}
