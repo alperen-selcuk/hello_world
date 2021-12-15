@@ -4,7 +4,6 @@ pipeline {
         HELM_REPO = "http://museum-34-142-28-211.nip.io:9090"
         VERSION = "${BUILD_NUMBER}"
         helmVersion = "1.0"+"."+"${VERSION}"
-        google-sa = "jenkins\@playground-334820.iam.gserviceaccount.com"
         google-prj-id = "playground-334820"
     }
     agent { 
@@ -56,7 +55,7 @@ pipeline {
      stage ('Helm Deploy') {
         steps {
             container('google') {
-                sh "gcloud auth activate-service-account ${google-sa} --key-file=sa.json --project=${google-prj-id}"
+                sh "gcloud auth activate-service-account jenkins@playground-334820.iam.gserviceaccount.com --key-file=sa.json --project=${google-prj-id}"
                 
                 sh "helm repo add chartmuseum ${HELM_REPO}"
                 
