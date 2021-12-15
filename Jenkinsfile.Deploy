@@ -2,7 +2,7 @@ pipeline {
     environment {
         APP = "hello_world"
         HELM_REPO = "http://museum-34-142-28-211.nip.io:9090"
-        def buildNumber = buildNumber
+        def buildNumber = true
     }
     agent { 
         kubernetes {
