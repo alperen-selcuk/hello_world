@@ -1,4 +1,8 @@
 pipeline {
+    environment {
+        APP = "hello-world"
+        HELM_REPO = ""
+    }
     agent { 
         kubernetes {
             yaml '''
@@ -40,6 +44,18 @@ pipeline {
          }
       }
     }
-    
+    stage('Helm Create') {
+        steps {
+            container('helm') {
+                sh '''#!/bin/bash
+                   wget -c https://github.com/alperen-selcuk/hello-world/raw/master/hello-world.tgz ##this is shared chart you can create your own charts file
+                   tar -xvzf web-1.tgz
+                   rm -f web-1.tgz
+                   helm package ${APP} --version=${buildNumber}
+                   #curl -L --data-binary @${APP}-${buildNumber}.tgz ${HELM_REPO}/api/charts
+                   '''
+                } 
+            }
+        }
   }
 }
