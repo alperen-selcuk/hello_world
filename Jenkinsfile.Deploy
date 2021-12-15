@@ -1,5 +1,41 @@
 pipeline {
-  agent any
+    agent { 
+        kubernetes {
+            yaml '''
+            apiVersion: v1
+            kind: Pod
+            spec:
+               containers:
+               - name : docker
+                 image : docker:latest
+                 command:
+                 - cat
+                 tty : true
+                 volumeMounts: 
+                 - mountPath: /var/run/docker.sock
+                   name: docker-sock
+               - name: helm
+                 image: dtzar/helm-kubectl
+                 command: 
+                 - cat
+                 tty: true
+               - name: google
+                 image: google/cloud-sdk
+                 command:
+                 - cat
+                 tty: true
+                 volumeMounts: 
+                 - mountPath: /root
+                   name: console-root
+                 - mountPath: /root/.kube
+                   name: console-kube
+               volumes: 
+                 - name : docker-sock
+                   hostPath: 
+                      path: /var/run/docker.sock
+             '''
+        }
+    }
   stages {
     stage ("get number") {
       steps {
@@ -9,5 +45,6 @@ pipeline {
          }
       }
     }
+    
   }
 }
