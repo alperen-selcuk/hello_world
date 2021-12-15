@@ -1,31 +1,122 @@
-### Docker & Java
+# HELLO WORLD PROJECT
 
-This repo contains demo materials for:
+this project uses Java(11), Maven, Docker, Helm, Kubernetes, Jenkins, Nginx Ingress, Google Cloud Platform
 
-- Tips minimize java containers images
-- Tricks for fast startup java apps running in containers
-- gotchas and issues while running java apps in containers and the improvements that has been made
 
-The repo is split into multiple branches, each contains a specific topic. The `Dockerfile`s uses the generated jar after running the build (`mvn clean package`). The build step could be integrated in the provided `Dockerfile`s, but it would slow the demoing the intention of this repo, so I kept it outside. Below branch details:
+## 🚀 Languages and Tools:
 
-- `master`: simple netty app, running in a container
-- `mod`: Using Project Jigsaw’s `jlink`, that offers the ability to produce a minimal JRE based on the modules our application requires.
-- `alpine`: This uses the early access alpine build of java 13, based on project Portola: the community effort to port java to `musl`
-- `cdc`: This showcase the class data sharing (CDS) feature. CDC offers dynamic sharing of data between multiple Java Virtual Machines (JVM), which helps to reduce the startup time and memory footprint.
-- `aot`: Using Ahead Of Time compilation. It compiles the bytecode such that it is completely static which should lead to the fastest startup and initial execution speed.
-- `graal`: This part uses graal VM to create native images for existing JVM-based applications.
-- `sb`: This branch contains a simple instructions to run the [petclinic](https://github.com/spring-projects/spring-petclinic) application and test how it behaves running inside a java 8 docker container, and java 11!
+<p align="left"> 
+    <a href="https://www.java.com" target="_blank"> <img src="https://img.icons8.com/color/48/000000/java-coffee-cup-logo.png"/> </a>
+    <a href="https://spring.io/projects/spring-boot" target="_blank"> <img src="https://img.icons8.com/color/48/000000/spring-logo.png"/> </a> 
+    <a href="https://git-scm.com/" target="_blank"> <img src="https://img.icons8.com/color/48/000000/git.png"/> </a> 
+    <a href="https://www.jenkins.io/" target="_blank"> <img src="https://img.icons8.com/color/48/000000/jenkins.png"/> </a>
+    <a href="https://maven.apache.org" target"_blank"> <img src="https://img.icons8.com/ios/50/000000/maven-ios.png"/> </a>
+    <a href="https://docker.com" target"_blank"> <img src="https://img.icons8.com/color/48/000000/docker.png"/> </a>
+    <a href="https://kubernetes.io" target"_blank"> <img src="https://img.icons8.com/color/48/000000/kubernetes.png"/> </a>
+    <a href="https://nginx.com" target"_blank"> <img src="https://img.icons8.com/color/48/000000/nginx.png"/> </a>
+    <a href="https://cloud.google.com" target"_blank"> <img src="https://img.icons8.com/color/48/000000/google-cloud.png"/> </a>
+    
+    
+    
+</p>
 
-### Benchmarking
+you can find details:
 
-the `bench.sh` run each container and print at the end the total size of the image + the time it takes for teh container to run! for me I named the images: `plain`, `cdc`,`aot`,`graal`, `alpine` and `mod`. I prefixed each of them with `dj`! Executing the scripts shows below results in my machine:
+* Java: https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html
+* Maven: https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
+* Docker: https://docs.docker.com/engine/installation/
+* Helm: https://helm.sh
+* Kubernetes: https://kubernetes.io/docs/tutorials/kubernetes-basics/
+
+
+## Kubernetes Provisioning with Terraform
+
+at the begining project we can provision Kubernetes cluster on Google Kubernetes Engine.
+
+you can use this document: https://learn.hashicorp.com/tutorials/terraform/gke
+
+![image](https://github.com/alperen-selcuk/mdns/blob/master/images/tf.gif?raw=true)
+
+first type "terraform plan" for test our terraform files and after "terraform apply" to create kubernetes cluster. i have one kubernetes cluster now so i added only terraform plan command output as a gif.
+
+
+## CI/CD structure
+
+![image](https://user-images.githubusercontent.com/78741582/146261102-3ea5dbac-0240-4bd0-adb5-883d01a353e1.png)
+
+
+project uses Jenkins for Continues Integration, uses Docker for Continues Delivery and uses Helm for Continues Deployment.
+
+when has change and push master on repository github jenkins start a pipeline with multiple jobs.
+
+![image](https://user-images.githubusercontent.com/78741582/146254349-6d538ef6-9367-4e24-b521-9fdef4e2b276.png)
+
+* first job - sonar
+1. stage: sonarqube check our code if has got any vulnerabilities or bugs. when quality gate response low point sonarqube triggered jenkins to abort pipeline.
+* second job - build
+1. stage, maven test and build, this job compile our java application, install dependency and give us an artifact.
+2. stage, this stage use docker container for build image with Dockerfile. after build image push dockerhub with latest tag.
+* third job - deploy
+1. stage, create helm chart with latest image tag. push chartmuseum as tgz file with helm tag. 
+2. stage, deploy helm chart on kubernetes cluster with google sdk. 
+
+
+
+## Kubernetes Ingress 
+
+both namespaces have got an ingress object. 
+
+dev ingress has /todos path for backend to validate application is working on ui test stage.
+
+below ingress use on prod namespace.
 
 ```
-Image   size        Startup
-plain    353.836MB   627 ms
-mod      59.12MB     649 ms
-alpine   47.0079MB   651 ms
-aot      392.888MB   537 ms
-cds      357.231MB   547 ms
-graal    13.3264MB   3 ms
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: my-ingress
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    ingress.kubernetes.io/rewrite-target: "/"
+spec:
+  rules:
+  - host: hello-35-246-50-224.nip.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: hello-world-hello-world
+          servicePort: 80
 ```
+
+## Grafana 
+
+if you want see pods metric you can use grafana operator. i have installed on kubernetes with below commands.
+
+```
+kubectl create ns monitoring
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring
+
+![image](https://user-images.githubusercontent.com/78741582/146255743-b7b22782-8a10-4416-87cf-7d25e10142b8.png)
+
+
+
+```
+
+## Conclusion
+
+
+this pipeline work properly. you can reach application use that link http://hello-35-246-50-224.nip.io
+
+
+you can touch me whenever you want below platforms.
+
+<p
+    <a href="https://www.linkedin.com/in/hasan-alperen-selçuk-529a8a4a/" target"_blank"> <img src="https://img.icons8.com/color/48/000000/linkedin.png"/> </a>
+     <a href="https://alperenhasanselcuk.medium.com" target"_blank"> <img src="https://img.icons8.com/color/48/000000/medium-logo--v2.png"/> </a>
+</p>
+
